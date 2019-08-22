@@ -1,8 +1,10 @@
 from django.urls import path , include
 
-from . import views
+from .views import index , OnGoal , Last
 
 app_name = 'tresure'
 urlpatterns = [
-    path('' , views.index , name ='index')
+    path('' , index , name ='index'),#廃棄予定
+    path('<int:pk>/on-goal/' , OnGoal.as_view() , name ='on-goal'),#pkはDifficultyの物
+    path('last/' , Last.as_view() , name ='last'),
 ]
