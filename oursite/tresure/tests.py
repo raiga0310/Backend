@@ -19,23 +19,23 @@ class On_Goal_Test(TestCase):
                                   objects.get(pk=str(i)))
 
     def test_on_goal(self):
-        for j in range(len(self.try_difficulty_pk_list)):  # playerの数だけ繰り返す。
-            player_pk = j + 1
+        for player in Player.objects.all():  # playerの数だけ繰り返す。
             s = self.client.session
-            s['player_pk'] = player_pk  # プレイヤーのpk(1スタート)をセッションに登録する。
+            s['player_pk'] = player.pk  # プレイヤーのpk(1スタート)をセッションに登録する。
             s.save()
-            for i in range(1, 3 + 1):  # Difficultyの長さだけ繰り返す。(iはDifficultyのpk)
+            for diff in Difficulty.objects.all():  # Difficultyの長さだけ繰り返す。
                 # 与えたセッションを使い,/tresure/(難易度のpk)/on-goal/をGETする。
-                response = self.client.get('/tresure/' + str(i) + '/on-goal/',
-                                           follow=True)
+                response = self.client.get('/tresure/' + str(diff.pk) +
+                                           '/on-goal/', follow=True)
                 # URLに与えた難易度のpkが,try_listのDifficulty(現在テスト中のプレイヤーに与えているDifficulty)のpkと等しい時
-                if(i == self.try_difficulty_pk_list[j]):
+                if(diff.pk == self.try_difficulty_pk_list[player.pk - 1]):
                     # 最後のページへ飛移するはず。(302)
                     self.assertEqual(response.redirect_chain,
                                      [('/tresure/last/', 302)])
-                    # 難易度の文字列化したものが表示される。
+                    # 難易度の文字列化したものが表示されるはず。
                     self.assertContains(response,
-                                        Difficulty.objects.get(pk=str(i)).name)
+                                        Difficulty.objects.
+                                        get(pk=str(diff.pk)).name)
                 else:
                     # 違うならエラーメッセージが表示されるはず。
-                    self.assertContains(response, "難易度が違います。他のＱＲコードを読んでください。")
+                    self.assertContains(response, '難易度が違います。他のＱＲコードを読んでください。')
