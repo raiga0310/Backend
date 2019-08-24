@@ -33,9 +33,7 @@ class On_Goal_Test(TestCase):
                     self.assertEqual(response.redirect_chain,
                                      [('/tresure/last/', 302)])
                     # 難易度の文字列化したものが表示されるはず。
-                    self.assertContains(response,
-                                        Difficulty.objects.
-                                        get(pk=str(diff.pk)).name)
+                    self.assertContains(response, diff.name)
                 else:
                     # 違うならエラーメッセージが表示されるはず。
                     self.assertContains(response, '難易度が違います。他のＱＲコードを読んでください。')
