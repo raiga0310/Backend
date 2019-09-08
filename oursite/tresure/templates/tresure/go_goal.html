@@ -1,10 +1,10 @@
-{% if diff.pk == 1 %}
+{% ifequal diff_pk 1 %}
     <h1>
         アナタが目指す場所は、{{goal}}です！
     </h1>
 {% else %}
     <h1>
-        並び替えて変換し、その場所を目指せ！
+        キーワードを並び替えて2進数から{{change}}に変換し、その場所を目指せ！
     </h1>
     <ol>
         {% for quiz in quizzes %}
@@ -12,9 +12,9 @@
         {% endfor %}
     </ol>
     <table>
-        <tr><th></th><th>二進数</th><th>{{change}}</th></tr>
+        <tr><th></th><th>2進数</th><th>{{change}}</th></tr>
         {% for corr in correspond %}
             <tr><td>{{corr.binary}}</td><td>{{corr.to_base}}</td></tr>
         {% endfor %}
     </table>
-{% endif %}
+{% endifequal %}

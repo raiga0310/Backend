@@ -2,13 +2,28 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.urls import reverse
-from .models import Player,  Difficulty
+from .models import Player, Difficulty, Goal, Quiz
+from random import shuffle
 
 
 class GoGoal(TemplateView):
     template_name = "tresure/go_goal.html"
 
     def get(self, request, *args, **kwargs):
+        player = get_object_or_404(Player, pk=request.session.get('player_pk'))
+        diff_pk = player.difficulty.pk
+        kwargs['diff_pk'] = player.difficulty.pk
+        if(diff_pk == 1):
+            kwargs['goal'] = player.difficulty.goal.name
+        else:
+            correspond = []
+            kwargs['quizzes'] = player.quizzes.all()
+            kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
+            for i in range(16):
+                correspond.append({'binary': bin(i),
+                                   'to_base':
+                                   (str(i) if diff_pk == 2 else hex(i))})
+            kwargs['correspond'] = correspond
         return super().get(request, *args, **kwargs)
 
 
