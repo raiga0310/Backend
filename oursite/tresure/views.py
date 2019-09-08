@@ -4,12 +4,6 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from .models import Player,  Difficulty
 
-
-# Create your views here.
-def index(request):
-    return HttpResponse('中身無し')
-
-
 class OnGoal(TemplateView):
     template_name = 'tresure/on_goal.html'
 
