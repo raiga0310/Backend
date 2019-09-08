@@ -19,10 +19,11 @@ class GoGoal(TemplateView):
             correspond = []
             kwargs['quizzes'] = player.quizzes.all()
             kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
-            for i in range(16):
-                correspond.append({'binary': bin(i),
+            for i in range(0b1_0000_0000):
+                correspond.append({'binary': format(i, '08b'),
                                    'to_base':
-                                   (str(i) if diff_pk == 2 else hex(i))})
+                                   (format(i, '08d') if diff_pk == 2
+                                    else format(i, '08x'))})
             kwargs['correspond'] = correspond
         return super().get(request, *args, **kwargs)
 
