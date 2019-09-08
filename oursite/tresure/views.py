@@ -4,6 +4,14 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from .models import Player,  Difficulty
 
+
+class GoGoal(TemplateView):
+    template_name = "tresure/go_goal.html"
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
 class OnGoal(TemplateView):
     template_name = 'tresure/on_goal.html'
 
