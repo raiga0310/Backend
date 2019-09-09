@@ -4,10 +4,10 @@
     <header></header>
     <main>
         <h1>ヒント</h1>
-        <div id={{hint}}></div>
-        <form action = "{% url 'treasure:hints' {{hint_index}} %}" method = "post">
+        <h2>{{hint}}</h2>
+        <form action = "" method = "post">
           {% csrf_token %}
-            <input type = "number" name = "number" value = "キーワードは？">
+          <input type = "number" name = "number" value = "キーワードは？">
           <input type="submit" value="確認">
         </form>
 
