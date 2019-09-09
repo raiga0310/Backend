@@ -25,28 +25,41 @@ class GoGoal(TemplateView):
 
 class Hints(TemplateView):
     template_name = 'tresure/hints.html'
+    #辞書で簡略化
+    hint = {1:player.quiz1.hint , 2:player.quiz2.hint ,
+            3:player.quiz3.hint , 4:player.quiz4.hint}
     keyword = {1:player.quiz1.keyword , 2:player.quiz2.keyword ,
               3:player.quiz3.keyword , 4:player.quiz4.keyword}
-    page = 1
 
-    def get(self, request, **kwargs):
-        player = get_object_or_404(Player,
-                                   pk=request.session.get('player_pk', -1))
-        return super().get(request, **kwargs)
+    def get(self, request, *args, **kwargs):
+        #セッションからplayerの情報を取得
+        player = get_object_or_404(Player,pk=request.session.get('player_pk'))
+        #現在のページに対応したヒントを送信
+        kwargs['hint'] = hint[kwargs['hint_index']]
 
-    def post(self, request, **kwargs):
+        return super().get(request , *args , **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        #キーワードを受け取ったか
         if self.request.POST.get('number', None):
-            if keyword[page] == self.request.POST.get('number', None)):
+            #受け取ったキーワードが現在のページの答えと等しいか
+            if keyword[kwargs['hint_index']] == self.request.POST.get('number', None)):
                 #正解と送信
-                if page == 4:
+                kwargs['result'] = '正解'
+                #現在が４ページ目か
+                if kwargs['hint_index'] == 4:
                     #ゴール誘導ページへ
+                    HttpResponceRedirect(django.shortcuts.reverse('go-goal'))
                 else:
-                    page++
-                    #pageページを表示
+                    #次のページへ
+                    HttpResponceRedirect(django.shortcuts.reverse('treasure/hints' , args = (kwargs['hint_index']+1)))
             else:
                 #不正解と送信
-                #pageページを表示
+                kwargs['result'] = '不正解'
+                #同じページへ
+                HttpResponceRedirect(django.shortcuts.reverse('treasure/hints' , args = (kwargs['hint_index'])))
 
+        return super().post(request , *args , **kwargs)
 
 class OnGoal(TemplateView):
     template_name = 'tresure/on_goal.html'
