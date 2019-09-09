@@ -58,9 +58,8 @@ class Hints(TemplateView):
                     return HttpResponceRedirect(reverse(
                             'tresure:hints', args=(kwargs['hint_index']+1)))
             else:
-                # 同じページへ
-                return HttpResponceRedirect(reverse(
-                        'tresure:hints', args=(kwargs['hint_index'])))
+                # 不正解と送信
+                kwargs['result'] = '不正解'
         return super().post(request, *args, **kwargs)
 
 
