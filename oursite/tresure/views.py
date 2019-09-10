@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from .models import Player, Difficulty, Goal, Quiz
 from random import shuffle
+from .utility import ConversionTableResolver
 
 
 class GoGoal(TemplateView):
@@ -12,19 +13,14 @@ class GoGoal(TemplateView):
     def get(self, request, *args, **kwargs):
         player = get_object_or_404(Player, pk=request.session.get('player_pk'))
         diff_pk = player.difficulty.pk
-        kwargs['diff_pk'] = player.difficulty.pk
+        kwargs['diff_pk'] = diff_pk
         if(diff_pk == 1):
             kwargs['goal'] = player.difficulty.goal.name
         else:
-            #correspond = []
             kwargs['quizzes'] = player.quizzes.all()
             kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
-            #for i in range(0b1_0000_0000):
-            #    correspond.append({'binary': format(i, '08b'),
-            #                       'to_base':
-            #                       (format(i, '08d') if diff_pk == 2
-            #                        else format(i, '08x'))})
-            #kwargs['correspond'] = correspond
+            table = ConversionTableResolver.createTable(diff_pk)
+            kwargs['corresponds'] = table.data
         return super().get(request, *args, **kwargs)
 
 

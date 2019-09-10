@@ -17,10 +17,10 @@
         <thred>
             <tr><th></th><th>2進数</th><th>{{change}}</th></tr>
         </thred>
-        <!--<tbody>
-            {% for corr in correspond %}correspondはbinaryが二進数でtoBaseが変換先
-                <tr><td>{{corr.binary}}</td><td>{{corr.to_base}}</td></tr>
+        <tbody>
+            {% for correspond in corresponds %}<!--correspondはbinaryが二進数でtoBaseが変換先-->
+                <tr><td>{{correspond.binary}}</td><td>{{correspond.to_base}}</td></tr>
             {% endfor %}
-        </tbody>-->
+        </tbody>
     </table>
 {% endifequal %}
