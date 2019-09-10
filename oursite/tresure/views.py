@@ -76,7 +76,24 @@ class Opening(TemplateView):
 
 
 class DifSel(TemplateView):
-    pass
+    template_name = 'tresure/dif_sel.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['difficulties'] = Difficulty.objects.all()
+        return context
+    
+    def post(self, request, **kwargs):
+        dif_pk = request.POST.get('diff', -1)
+        difficulty = get_object_or_404(Difficulty, pk=dif_pk)
+        #プレイヤー作成
+        player = Player.objects.create(difficulty=difficulty)
+        quizzes = list(difficulty.quizzes.all())
+        shuffle(quizzes)
+        for i in quizzes:
+            player.quizzes.add(i)
+        request.session['player_pk'] = player.pk
+        return HttpResponseRedirect(reverse('tresure:hints', hint_index=1))
 
 
 class OnGoal(TemplateView):
