@@ -64,7 +64,15 @@ class Hints(TemplateView):
 
 
 class Opening(TemplateView):
-    pass
+    template_name = 'tresure/opening.html'
+
+    def post(self, request, **kwargs):
+        if(request.POST.get('was_pushed', -1) != -1):
+            if(request.session.get('player_pk', -1) != -1):
+                return HttpResponseRedirect(reverse('tresure:hints', hint_index=1))
+            else:
+                return HttpResponseRedirect(reverse('tresure:dif-sel'))
+        return super().post(self, request, **kwargs)
 
 
 class DifSel(TemplateView):

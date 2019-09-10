@@ -2,9 +2,9 @@
 <form action="" method="POST">
     {% csrf_token %}
     {% for diff in difficulties %}
-        <input type = "radio" name = "diff" id = "{{ diff.id }}" value = "{{ diff.id }}">
+        <input type = "radio" name = "diff" id = "{{diff.id}}" value = "{{diff.id}}">
         <label for = "{{diff.id}}">
-            {{ diff.name }}
+            {{diff.name}}
         </label>
         <br> <!--改行コード-->
     {% endfor %}
