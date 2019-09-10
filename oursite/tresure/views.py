@@ -16,15 +16,15 @@ class GoGoal(TemplateView):
         if(diff_pk == 1):
             kwargs['goal'] = player.difficulty.goal.name
         else:
-            correspond = []
+            #correspond = []
             kwargs['quizzes'] = player.quizzes.all()
             kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
-            for i in range(0b1_0000_0000):
-                correspond.append({'binary': format(i, '08b'),
-                                   'to_base':
-                                   (format(i, '08d') if diff_pk == 2
-                                    else format(i, '08x'))})
-            kwargs['correspond'] = correspond
+            #for i in range(0b1_0000_0000):
+            #    correspond.append({'binary': format(i, '08b'),
+            #                       'to_base':
+            #                       (format(i, '08d') if diff_pk == 2
+            #                        else format(i, '08x'))})
+            #kwargs['correspond'] = correspond
         return super().get(request, *args, **kwargs)
 
 
