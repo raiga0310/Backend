@@ -1,0 +1,12 @@
+<h1>難易度を選んでください</h1>
+<form action="" method="POST">
+    {% csrf_token %}
+    {% for diff in difficulties %}
+        <input type = "radio" name = "diff" id = "{{ diff.id }}" value = "{{ diff.id }}">
+        <label for = "{{diff.id}}">
+            {{ diff.name }}
+        </label>
+        <br> <!--改行コード-->
+    {% endfor %}
+    <input type="submit" value="確認">
+</form>
