@@ -63,6 +63,14 @@ class Hints(TemplateView):
         return super().post(request, *args, **kwargs)
 
 
+class Opening(TemplateView):
+    pass
+
+
+class DifSel(TemplateView):
+    pass
+
+
 class OnGoal(TemplateView):
     template_name = 'tresure/on_goal.html'
 
