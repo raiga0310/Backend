@@ -4,6 +4,7 @@ from django.test import Client
 from .models import Difficulty, Player
 from django.urls import reverse
 from django.contrib.auth.models import User
+from .utility import ConversionTableResolver
 # Create your tests here.
 
 
@@ -60,11 +61,6 @@ class Goal_Test(TestCase):
             elif(self.try_difficulty_pk_list[player.pk - 1] == 2):
                 # 2なら10進数と表示されるはず。
                 self.assertContains(response, '10進数')
-                # 変換表が表示されているか
-                self.assertContains(response, '00000000')
-                self.assertContains(response, '11111111')
-                self.assertContains(response, '0')
-                self.assertContains(response, '255')
             else:
                 self.assertEqual(self.try_difficulty_pk_list[player.pk - 1], 3)
                 # 3なら16進数が表示されるはず。
@@ -74,3 +70,22 @@ class Goal_Test(TestCase):
                 self.assertContains(response, '11111111')
                 self.assertContains(response, '00')
                 self.assertContains(response, 'ff')
+
+
+class UtilityTest(TestCase):
+    def setUp(self):
+        pass
+
+    def test_(self):
+        table_data = ConversionTableResolver.createTable(2).data
+        # 変換表(10進)が表示されているか
+        self.assertIn({'binary': '00000000',
+                       'to_base': '00000000'}, table_data)
+        self.assertIn({'binary': '11111111',
+                       'to_base': '00000255'}, table_data)
+        table_data = ConversionTableResolver.createTable(3).data
+        # 変換表(16進)が表示されているか
+        self.assertIn({'binary': '00000000',
+                       'to_base': '00000000'}, table_data)
+        self.assertIn({'binary': '11111111',
+                       'to_base': '000000ff'}, table_data)
