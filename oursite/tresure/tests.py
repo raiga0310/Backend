@@ -65,11 +65,6 @@ class Goal_Test(TestCase):
                 self.assertEqual(self.try_difficulty_pk_list[player.pk - 1], 3)
                 # 3なら16進数が表示されるはず。
                 self.assertContains(response, '16進数')
-                # 変換表が表示されているか
-                self.assertContains(response, '00000000')
-                self.assertContains(response, '11111111')
-                self.assertContains(response, '00')
-                self.assertContains(response, 'ff')
 
 
 class UtilityTest(TestCase):
