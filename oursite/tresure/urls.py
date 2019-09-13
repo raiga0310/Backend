@@ -8,4 +8,5 @@ urlpatterns = [
     # pkはDifficultyの物
     path('<int:pk>/on-goal/', OnGoal.as_view(), name='on-goal'),
     path('last/', Last.as_view(), name='last'),
+    path('<int:hint_index>/hints/', Hints.as_view(), name='hints'),
 ]
