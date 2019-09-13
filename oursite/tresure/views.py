@@ -2,12 +2,26 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.urls import reverse
-from .models import Player,  Difficulty
+from .models import Player, Difficulty, Goal, Quiz
+from random import shuffle
+from .utility import ConversionTableResolver
 
 
-# Create your views here.
-def index(request):
-    return HttpResponse('中身無し')
+class GoGoal(TemplateView):
+    template_name = "tresure/go_goal.html"
+
+    def get(self, request, *args, **kwargs):
+        player = get_object_or_404(Player, pk=request.session.get('player_pk'))
+        diff_pk = player.difficulty.pk
+        kwargs['diff_pk'] = diff_pk
+        if(diff_pk == 1):
+            kwargs['goal'] = player.difficulty.goal.name
+        else:
+            kwargs['quizzes'] = player.quizzes.all()
+            kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
+            table = ConversionTableResolver.createTable(diff_pk)
+            kwargs['corresponds'] = table.data
+        return super().get(request, *args, **kwargs)
 
 
 class OnGoal(TemplateView):
