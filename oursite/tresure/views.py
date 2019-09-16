@@ -8,7 +8,7 @@ from .utility import ConversionTableResolver
 
 
 class GoGoal(TemplateView):
-    template_name = "tresure/go_goal.html"
+    template_name = "tresure/go-goal.html"
 
     def get(self, request, *args, **kwargs):
         player = get_object_or_404(Player, pk=request.session.get('player_pk'))
@@ -75,7 +75,7 @@ class Opening(TemplateView):
 
 
 class DifSel(TemplateView):
-    template_name = 'tresure/dif_sel.html'
+    template_name = 'tresure/dif-sel.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -96,7 +96,7 @@ class DifSel(TemplateView):
 
 
 class OnGoal(TemplateView):
-    template_name = 'tresure/on_goal.html'
+    template_name = 'tresure/on-goal.html'
 
     def get(self, request, **kwargs):
         player = get_object_or_404(Player,
