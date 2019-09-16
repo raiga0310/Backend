@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.urls import reverse
-from .models import Player, Difficulty, Goal, Quiz
+from .models import Player, Difficulty, Goal, Quiz, Quizzes
 from random import shuffle
 from .utility import ConversionTableResolver
 
@@ -17,7 +17,7 @@ class GoGoal(TemplateView):
         if(diff_pk == 1):
             kwargs['goal'] = player.difficulty.goal.name
         else:
-            kwargs['quizzes'] = player.quizzes.all()
+            kwargs['quizzes'] = player.quizzes.get_all_quizzes()
             kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
             table = ConversionTableResolver.createTable(diff_pk)
             kwargs['corresponds'] = table.data
@@ -36,7 +36,7 @@ class Hints(TemplateView):
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
         # 現在のページに対応したヒントを送信
         #kwargs['hint'] = hint[kwargs['hint_index']]
-        kwargs['hint'] = list(player.quizzes.all())[kwargs['hint_index'] - 1].hint
+        kwargs['hint'] = player.quizzes.get_quiz(kwargs['hint_index'] - 1).hint
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -49,7 +49,7 @@ class Hints(TemplateView):
             #keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
-            if list(player.quizzes.all())[kwargs['hint_index'] - 1].keyword == self.request.POST.get('number', None):
+            if player.quizzes.get_quiz(kwargs['hint_index'] - 1).keyword == self.request.POST.get('number', None):
                 # 正解と送信
                 kwargs['result'] = '正解'
                 # 現在が４ページ目なら
@@ -88,12 +88,16 @@ class DifSel(TemplateView):
     def post(self, request, **kwargs):
         dif_pk = request.POST.get('diff', -1)
         difficulty = get_object_or_404(Difficulty, pk=dif_pk)
-        # プレイヤー作成
-        player = Player.objects.create(difficulty=difficulty)
+
         quizzes = list(difficulty.quizzes.all())
         shuffle(quizzes)
-        for i in quizzes:
-            player.quizzes.add(i)
+
+        quizzes = Quizzes.objects.create(quiz1=quizzes[0],
+                                         quiz2=quizzes[1],
+                                         quiz3=quizzes[2],
+                                         quiz4=quizzes[3])
+        # プレイヤー作成
+        player = Player.objects.create(difficulty=difficulty, quizzes=quizzes)
         request.session['player_pk'] = player.pk
         return HttpResponseRedirect(reverse('tresure:hints', args=(1,)))
 
