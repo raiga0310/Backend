@@ -32,10 +32,10 @@ class Hints(TemplateView):
         player = get_object_or_404(Player,
                                    pk=request.session.get('player_pk', -1))
         # 簡略化
-        #hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
+        # hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
         # 現在のページに対応したヒントを送信
-        #kwargs['hint'] = hint[kwargs['hint_index']]
+        # kwargs['hint'] = hint[kwargs['hint_index']]
         kwargs['hint'] = player.quizzes.get_quiz(kwargs['hint_index'] - 1).hint
         return super().get(request, *args, **kwargs)
 
@@ -49,7 +49,9 @@ class Hints(TemplateView):
             # keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
-            if player.quizzes.get_quiz(kwargs['hint_index'] - 1).keyword == self.request.POST.get('number', None):
+            keyword = player.quizzes.get_quiz(
+                      kwargs['hint_index'] - 1).keyword
+            if keyword == self.request.POST.get('number', None):
                 # 正解と送信
                 # kwargs['result'] = '正解'
                 # 現在が４ページ目なら

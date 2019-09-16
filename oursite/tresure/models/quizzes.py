@@ -3,10 +3,14 @@ from . import Quiz
 
 
 class Quizzes(models.Model):
-    quiz1 = models.ForeignKey(Quiz, related_name="quiz1", on_delete = models.CASCADE)
-    quiz2 = models.ForeignKey(Quiz, related_name="quiz2", on_delete = models.CASCADE)
-    quiz3 = models.ForeignKey(Quiz, related_name="quiz3", on_delete = models.CASCADE)
-    quiz4 = models.ForeignKey(Quiz, related_name="quiz4", on_delete = models.CASCADE)
+    quiz1 = models.ForeignKey(Quiz,
+                              related_name="quiz1", on_delete=models.CASCADE)
+    quiz2 = models.ForeignKey(Quiz,
+                              related_name="quiz2", on_delete=models.CASCADE)
+    quiz3 = models.ForeignKey(Quiz,
+                              related_name="quiz3", on_delete=models.CASCADE)
+    quiz4 = models.ForeignKey(Quiz,
+                              related_name="quiz4", on_delete=models.CASCADE)
 
     def get_quiz(self, index):
         return [self.quiz1, self.quiz2, self.quiz3, self.quiz4][index]
