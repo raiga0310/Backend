@@ -79,7 +79,7 @@ class DifSel(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['difficulties'] = Difficulty.objects.all
+        context['difficulties'] = Difficulty.objects.all()
         return context
 
     def post(self, request, **kwargs):
