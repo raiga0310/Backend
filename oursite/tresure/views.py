@@ -32,35 +32,38 @@ class Hints(TemplateView):
         player = get_object_or_404(Player,
                                    pk=request.session.get('player_pk', -1))
         # 簡略化
-        hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
-                3: player.quiz3.hint, 4: player.quiz4.hint}
+        #hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
+        #        3: player.quiz3.hint, 4: player.quiz4.hint}
         # 現在のページに対応したヒントを送信
-        kwargs['hint'] = hint[kwargs['hint_index']]
+        #kwargs['hint'] = hint[kwargs['hint_index']]
+        kwargs['hint'] = list(player.quizzes.all())[kwargs['hint_index'] - 1].hint
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         # キーワードを受け取ったなら
         if self.request.POST.get('number', None):
+            # セッションからplayerの情報を取得
+            player = get_object_or_404(Player,
+                                       pk=request.session.get('player_pk', -1))
             # 簡略化
-            keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
-                       3: player.quiz3.keyword, 4: player.quiz4.keyword}
+            #keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
+            #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
-            if keyword[kwargs['hint_index']] == self.request.POST.get('number',
-                                                                      None):
+            if list(player.quizzes.all())[kwargs['hint_index'] - 1].keyword == self.request.POST.get('number', None):
                 # 正解と送信
                 kwargs['result'] = '正解'
                 # 現在が４ページ目なら
                 if kwargs['hint_index'] == 4:
                     # ゴール誘導ページへ
-                    return HttpResponceRedirect(reverse('tresure:go-goal'))
+                    return HttpResponseRedirect(reverse('tresure:go-goal'))
                 else:
                     # 次のページへ
-                    return HttpResponceRedirect(reverse(
-                            'tresure:hints', args=(kwargs['hint_index']+1)))
+                    return HttpResponseRedirect(reverse(
+                            'tresure:hints', args=(kwargs['hint_index']+1,)))
             else:
                 # 不正解と送信
                 kwargs['result'] = '不正解'
-        return super().post(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
 
 class Opening(TemplateView):
