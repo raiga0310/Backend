@@ -46,12 +46,12 @@ class Hints(TemplateView):
             player = get_object_or_404(Player,
                                        pk=request.session.get('player_pk', -1))
             # 簡略化
-            #keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
+            # keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
             if player.quizzes.get_quiz(kwargs['hint_index'] - 1).keyword == self.request.POST.get('number', None):
                 # 正解と送信
-                kwargs['result'] = '正解'
+                # kwargs['result'] = '正解'
                 # 現在が４ページ目なら
                 if kwargs['hint_index'] == 4:
                     # ゴール誘導ページへ
