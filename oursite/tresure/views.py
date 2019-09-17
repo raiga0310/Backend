@@ -17,7 +17,7 @@ class GoGoal(TemplateView):
         if(diff_pk == 1):
             kwargs['goal'] = player.difficulty.goal.name
         else:
-            kwargs['quizzes'] = player.quizzes.get_all_quizzes()
+            kwargs['quizzes'] = player.quizzes.all()
             kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
             table = ConversionTableResolver.createTable(diff_pk)
             kwargs['corresponds'] = table.data
@@ -36,7 +36,8 @@ class Hints(TemplateView):
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
         # 現在のページに対応したヒントを送信
         # kwargs['hint'] = hint[kwargs['hint_index']]
-        kwargs['hint'] = player.quizzes.get_quiz(kwargs['hint_index'] - 1).hint
+        quiz_data = player.quizzes.get(order=kwargs['hint_index'] - 1)
+        kwargs['hint'] = quiz_data.quiz.hint
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -49,8 +50,8 @@ class Hints(TemplateView):
             # keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
-            keyword = player.quizzes.get_quiz(
-                      kwargs['hint_index'] - 1).keyword
+            quiz_data = player.quizzes.get(order=kwargs['hint_index'] - 1)
+            keyword = quiz_data.quiz.keyword
             if keyword == self.request.POST.get('number', None):
                 # 正解と送信
                 # kwargs['result'] = '正解'
@@ -93,13 +94,10 @@ class DifSel(TemplateView):
 
         quizzes = list(difficulty.quizzes.all())
         shuffle(quizzes)
-
-        quizzes = Quizzes.objects.create(quiz1=quizzes[0],
-                                         quiz2=quizzes[1],
-                                         quiz3=quizzes[2],
-                                         quiz4=quizzes[3])
         # プレイヤー作成
-        player = Player.objects.create(difficulty=difficulty, quizzes=quizzes)
+        player = Player.objects.create(difficulty=difficulty)
+        for i in range(len(quizzes)):
+            player.quizzes.add(QuizData.objects.create(quiz=quizzes[i], order=i))
         request.session['player_pk'] = player.pk
         return HttpResponseRedirect(reverse('tresure:hints', args=(1,)))
 

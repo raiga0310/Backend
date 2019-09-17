@@ -7,9 +7,9 @@
         キーワードを並び替えて2進数から{{change}}に変換し、その場所を目指せ！<!--changeは変換先のn進数-->
     </h1>
     <ol>
-        {% for quiz in quizzes %}<!--quizzesはそのプレイヤーのクイズのあつまり-->
+        {% for quiz_data in quizzes %}<!--quizzesはそのプレイヤーのクイズのあつまり-->
             <li>
-                {{quiz.keyword}}
+                {{quiz_data.quiz.keyword}}
             </li>
         {% endfor %}
     </ol>
