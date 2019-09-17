@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import Opening, DifSel, OnGoal, Last
+from .views import Opening, DifSel, OnGoal, GoGoal, Last, Hints
 
 app_name = 'tresure'
 urlpatterns = [
