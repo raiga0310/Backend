@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.urls import reverse
-from .models import Player, Difficulty, Goal, Quiz, Quizzes
+from .models import Player, Difficulty, Goal, Quiz, QuizData
 from random import shuffle
 from .utility import ConversionTableResolver
 

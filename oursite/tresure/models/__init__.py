@@ -1,5 +1,5 @@
 from .quiz import Quiz
 from .goal import Goal
 from .difficulty import Difficulty
-from .quizzes import Quizzes
+from .quiz_data import QuizData
 from .player import Player
