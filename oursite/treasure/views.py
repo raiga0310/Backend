@@ -57,9 +57,11 @@ class Hints(TemplateView):
                 # kwargs['result'] = '正解'
                 # 現在が４ページ目なら
                 if kwargs['hint_index'] == 4:
+                    player.progress = 5
                     # ゴール誘導ページへ
                     return HttpResponseRedirect(reverse('treasure:go-goal'))
                 else:
+                    player.progress = kwargs['hint_index'] + 1
                     # 次のページへ
                     return HttpResponseRedirect(reverse(
                             'treasure:hints', args=(kwargs['hint_index']+1,)))
@@ -95,7 +97,7 @@ class DifSel(TemplateView):
         quizzes = list(difficulty.quizzes.all())
         shuffle(quizzes)
         # プレイヤー作成
-        player = Player.objects.create(difficulty=difficulty)
+        player = Player.objects.create(difficulty=difficulty, progress=1)
         for i in range(len(quizzes)):
             player.quizzes.add(
                 QuizData.objects.create(quiz=quizzes[i], order=i)
@@ -111,6 +113,7 @@ class OnGoal(TemplateView):
         player = get_object_or_404(Player,
                                    pk=request.session.get('player_pk', -1))
         if kwargs['pk'] == player.difficulty.pk:
+            player.progress = 6
             return HttpResponseRedirect(reverse('treasure:last'))
         return super().get(request, **kwargs)
 
