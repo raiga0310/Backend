@@ -14,4 +14,5 @@ class ConversionTableResolver:
 
 
 class ConversionTable:
-    data = []
+    def __init__(self):
+        self.data = []
