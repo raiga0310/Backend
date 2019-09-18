@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tresure', '0002_auto_20190909_1846'),
+        ('treasure', '0002_auto_20190909_1846'),
     ]
 
     operations = [
@@ -19,15 +19,15 @@ class Migration(migrations.Migration):
             name='Quizzes',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quiz1', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz1', to='tresure.Quiz')),
-                ('quiz2', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz2', to='tresure.Quiz')),
-                ('quiz3', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz3', to='tresure.Quiz')),
-                ('quiz4', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz4', to='tresure.Quiz')),
+                ('quiz1', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz1', to='treasure.Quiz')),
+                ('quiz2', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz2', to='treasure.Quiz')),
+                ('quiz3', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz3', to='treasure.Quiz')),
+                ('quiz4', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quiz4', to='treasure.Quiz')),
             ],
         ),
         migrations.AddField(
             model_name='player',
             name='quizzes',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='tresure.Quizzes'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='treasure.Quizzes'),
         ),
     ]
