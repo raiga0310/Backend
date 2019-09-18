@@ -19,7 +19,8 @@ jobs:
 
       - run:
           name: Lint by pycodestyle
-          command: pycodestyle oursite
+          command: pycodestyle --exclude=migrations,settings.py oursite
+
 
       - run:
           name: Run tests
