@@ -63,10 +63,12 @@ class Hints(TemplateView):
                 # 現在が４ページ目なら
                 if kwargs['hint_index'] == 4:
                     player.progress = 5
+                    player.save()
                     # ゴール誘導ページへ
                     return HttpResponseRedirect(reverse('treasure:go-goal'))
                 else:
                     player.progress = kwargs['hint_index'] + 1
+                    player.save()
                     # 次のページへ
                     return HttpResponseRedirect(reverse(
                             'treasure:hints', args=(kwargs['hint_index']+1,)))
@@ -90,9 +92,9 @@ class DifSel(TemplateView):
     template_name = 'treasure/dif-sel.html'
 
     def get(self, request, *args, **kwargs):
-        if (request.session.get('player_pk', -1) == -1):
+        if (request.session.get('player_pk', -1) != -1):
             return redirect('tresure:progress-error')
-        return super.get(self, request, *args, **kwargs)
+        return super().get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -144,7 +146,7 @@ class ProgressError(View):
         player = get_player(request)
         progress = player.progress
         if (progress <= 4):
-            return redirect('tresure:hints', args=(progress,))
+            return redirect('tresure:hints', hint_index=progress)
         elif (progress == 5):
             return redirect('tresure:go-goal')
         elif (progress == 6):
@@ -156,15 +158,15 @@ class Reset(TemplateView):
 
     def post(self, request, *args, **kwargs):
         answer = request.POST.get('answer', 'n')
+        player = get_player(request)
         if (answer == 'y'):
-            player = get_player(request)
-            player.remove()
-            request.session['player_pk'] = -1
-            redirect('tresure:dif-sel')
+            player.delete()
+            del request.session['player_pk']
+            return redirect('tresure:dif-sel')
         else:
             progress = player.progress
             if (progress <= 4):
-                return redirect('tresure:hints', args=(progress,))
+                return redirect('tresure:hints', hint_index=progress)
             elif (progress == 5):
                 return redirect('tresure:go-goal')
             elif (progress == 6):
