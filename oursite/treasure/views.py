@@ -13,6 +13,10 @@ class GoGoal(TemplateView):
 
     def get(self, request, *args, **kwargs):
         player = get_player(request)
+
+        if (player.progress != 5):
+            return redirect('tresure:progress-error')
+        
         diff_pk = player.difficulty.pk
         kwargs['diff_pk'] = diff_pk
         if(diff_pk == 1):
@@ -31,6 +35,8 @@ class Hints(TemplateView):
     def get(self, request, *args, **kwargs):
         # セッションからplayerの情報を取得
         player = get_player(request)
+        if (player.progress != kwargs['hint_index']):
+            return redirect('tresure:progress-error')
         # 簡略化
         # hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
@@ -115,6 +121,10 @@ class OnGoal(TemplateView):
 
     def get(self, request, **kwargs):
         player = get_player(request)
+        
+        if (player.progress != 6):
+            return redirect('tresure:progress-error')
+        
         if kwargs['pk'] == player.difficulty.pk:
             player.progress = 6
             return HttpResponseRedirect(reverse('treasure:last'))
