@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404, reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, reverse, redirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.generic import TemplateView
 from django.views import View
 from django.urls import reverse
@@ -129,4 +129,15 @@ class Last(TemplateView):
         return super().get(request, **kwargs)
 
 class ProgressError(View):
-    pass
+    
+    def get(self, request, **kwargs):
+        player = get_object_or_404(Player,
+                                   pk=request.session.get('player_pk', -1))
+        progress = player.progress
+        if (progress <= 4):
+            return redirect('tresure:hints', args=(progress,))
+        elif (progress == 5):
+            return redirect('tresure:go-goal')
+        elif (progress == 6):
+            return redirect('tresure:last')
+        return Http404()
