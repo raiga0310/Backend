@@ -21,7 +21,6 @@ jobs:
           name: Lint by pycodestyle
           command: pycodestyle --exclude=migrations,settings.py oursite
 
-
       - run:
           name: Run tests
           command: cd oursite && python3 manage.py test
