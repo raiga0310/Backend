@@ -16,7 +16,7 @@ class GoGoal(TemplateView):
 
         if (player.progress != 5):
             return redirect('tresure:progress-error')
-        
+
         diff_pk = player.difficulty.pk
         kwargs['diff_pk'] = diff_pk
         if(diff_pk == 1):
@@ -122,10 +122,10 @@ class OnGoal(TemplateView):
 
     def get(self, request, **kwargs):
         player = get_player(request)
-        
+
         if (player.progress != 6):
             return redirect('tresure:progress-error')
-        
+
         if kwargs['pk'] == player.difficulty.pk:
             player.progress = 6
             return HttpResponseRedirect(reverse('treasure:last'))
@@ -140,8 +140,9 @@ class Last(TemplateView):
         kwargs['dif'] = player.difficulty
         return super().get(request, **kwargs)
 
+
 class ProgressError(View):
-    
+
     def get(self, request, **kwargs):
         player = get_player(request)
         progress = player.progress
@@ -152,6 +153,7 @@ class ProgressError(View):
         elif (progress == 6):
             return redirect('tresure:last')
         return Http404()
+
 
 class Reset(TemplateView):
     template_name = 'tresure/reset.html'
