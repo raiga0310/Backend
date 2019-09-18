@@ -81,8 +81,7 @@ class Opening(TemplateView):
 
     def post(self, request, **kwargs):
         if(request.session.get('player_pk', -1) != -1):
-            return HttpResponseRedirect(
-                reverse('treasure:hints', args=(1,)))
+            return redirect('treasure:reset')
         else:
             return HttpResponseRedirect(reverse('treasure:dif-sel'))
 
@@ -155,8 +154,23 @@ class ProgressError(View):
 class Reset(TemplateView):
     template_name = 'tresure/reset.html'
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        answer = request.POST.get('answer', 'n')
+        if (answer == 'y'):
+            player = get_player(request)
+            player.remove()
+            request.session['player_pk'] = -1
+            redirect('tresure:dif-sel')
+        else:
+            progress = player.progress
+            if (progress <= 4):
+                return redirect('tresure:hints', args=(progress,))
+            elif (progress == 5):
+                return redirect('tresure:go-goal')
+            elif (progress == 6):
+                return redirect('tresure:last')
+            return Http404()
+
 
 def get_player(request):
     return get_object_or_404(Player,
