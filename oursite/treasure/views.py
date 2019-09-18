@@ -152,6 +152,12 @@ class ProgressError(View):
             return redirect('tresure:last')
         return Http404()
 
+class Reset(TemplateView):
+    template_name = 'tresure/reset.html'
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 def get_player(request):
     return get_object_or_404(Player,
                              pk=request.session.get('player_pk', -1))
