@@ -12,7 +12,7 @@ class GoGoal(TemplateView):
     template_name = "treasure/go-goal.html"
 
     def get(self, request, *args, **kwargs):
-        player = get_object_or_404(Player, pk=request.session.get('player_pk'))
+        player = get_player(request)
         diff_pk = player.difficulty.pk
         kwargs['diff_pk'] = diff_pk
         if(diff_pk == 1):
@@ -30,8 +30,7 @@ class Hints(TemplateView):
 
     def get(self, request, *args, **kwargs):
         # セッションからplayerの情報を取得
-        player = get_object_or_404(Player,
-                                   pk=request.session.get('player_pk', -1))
+        player = get_player(request)
         # 簡略化
         # hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
@@ -45,8 +44,7 @@ class Hints(TemplateView):
         # キーワードを受け取ったなら
         if self.request.POST.get('number', None):
             # セッションからplayerの情報を取得
-            player = get_object_or_404(Player,
-                                       pk=request.session.get('player_pk', -1))
+            player = get_player(request)
             # 簡略化
             # keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
@@ -86,6 +84,11 @@ class Opening(TemplateView):
 class DifSel(TemplateView):
     template_name = 'treasure/dif-sel.html'
 
+    def get(self, request, *args, **kwargs):
+        if (request.session.get('player_pk', -1) == -1):
+            return redirect('tresure:progress-error')
+        return super.get(self, request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['difficulties'] = Difficulty.objects.all()
@@ -111,8 +114,7 @@ class OnGoal(TemplateView):
     template_name = 'treasure/on-goal.html'
 
     def get(self, request, **kwargs):
-        player = get_object_or_404(Player,
-                                   pk=request.session.get('player_pk', -1))
+        player = get_player(request)
         if kwargs['pk'] == player.difficulty.pk:
             player.progress = 6
             return HttpResponseRedirect(reverse('treasure:last'))
@@ -123,16 +125,14 @@ class Last(TemplateView):
     template_name = 'treasure/last.html'
 
     def get(self, request, **kwargs):
-        player = get_object_or_404(Player,
-                                   pk=request.session.get('player_pk', -1))
+        player = get_player(request)
         kwargs['dif'] = player.difficulty
         return super().get(request, **kwargs)
 
 class ProgressError(View):
     
     def get(self, request, **kwargs):
-        player = get_object_or_404(Player,
-                                   pk=request.session.get('player_pk', -1))
+        player = get_player(request)
         progress = player.progress
         if (progress <= 4):
             return redirect('tresure:hints', args=(progress,))
@@ -141,3 +141,7 @@ class ProgressError(View):
         elif (progress == 6):
             return redirect('tresure:last')
         return Http404()
+
+def get_player(request):
+    return get_object_or_404(Player,
+                             pk=request.session.get('player_pk', -1))
