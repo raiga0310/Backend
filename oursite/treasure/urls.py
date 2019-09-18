@@ -1,7 +1,7 @@
 from django.urls import path, include
 from .views import Opening, DifSel, OnGoal, GoGoal, Last, Hints
 
-app_name = 'tresure'
+app_name = 'treasure'
 urlpatterns = [
     path('go-goal/', GoGoal.as_view(), name='go-goal'),
     path('opening/', Opening.as_view(), name='opening'),

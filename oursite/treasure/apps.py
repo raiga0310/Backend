@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class TresureConfig(AppConfig):
-    name = 'tresure'
+class TreasureConfig(AppConfig):
+    name = 'treasure'

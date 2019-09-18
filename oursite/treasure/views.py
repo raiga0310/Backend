@@ -8,7 +8,7 @@ from .utility import ConversionTableResolver
 
 
 class GoGoal(TemplateView):
-    template_name = "tresure/go-goal.html"
+    template_name = "treasure/go-goal.html"
 
     def get(self, request, *args, **kwargs):
         player = get_object_or_404(Player, pk=request.session.get('player_pk'))
@@ -25,7 +25,7 @@ class GoGoal(TemplateView):
 
 
 class Hints(TemplateView):
-    template_name = 'tresure/hints.html'
+    template_name = 'treasure/hints.html'
 
     def get(self, request, *args, **kwargs):
         # セッションからplayerの情報を取得
@@ -58,11 +58,11 @@ class Hints(TemplateView):
                 # 現在が４ページ目なら
                 if kwargs['hint_index'] == 4:
                     # ゴール誘導ページへ
-                    return HttpResponseRedirect(reverse('tresure:go-goal'))
+                    return HttpResponseRedirect(reverse('treasure:go-goal'))
                 else:
                     # 次のページへ
                     return HttpResponseRedirect(reverse(
-                            'tresure:hints', args=(kwargs['hint_index']+1,)))
+                            'treasure:hints', args=(kwargs['hint_index']+1,)))
             else:
                 # 不正解と送信
                 kwargs['result'] = '不正解'
@@ -70,18 +70,18 @@ class Hints(TemplateView):
 
 
 class Opening(TemplateView):
-    template_name = 'tresure/opening.html'
+    template_name = 'treasure/opening.html'
 
     def post(self, request, **kwargs):
         if(request.session.get('player_pk', -1) != -1):
             return HttpResponseRedirect(
-                reverse('tresure:hints', args=(1,)))
+                reverse('treasure:hints', args=(1,)))
         else:
-            return HttpResponseRedirect(reverse('tresure:dif-sel'))
+            return HttpResponseRedirect(reverse('treasure:dif-sel'))
 
 
 class DifSel(TemplateView):
-    template_name = 'tresure/dif-sel.html'
+    template_name = 'treasure/dif-sel.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -101,22 +101,22 @@ class DifSel(TemplateView):
                 QuizData.objects.create(quiz=quizzes[i], order=i)
             )
         request.session['player_pk'] = player.pk
-        return HttpResponseRedirect(reverse('tresure:hints', args=(1,)))
+        return HttpResponseRedirect(reverse('treasure:hints', args=(1,)))
 
 
 class OnGoal(TemplateView):
-    template_name = 'tresure/on-goal.html'
+    template_name = 'treasure/on-goal.html'
 
     def get(self, request, **kwargs):
         player = get_object_or_404(Player,
                                    pk=request.session.get('player_pk', -1))
         if kwargs['pk'] == player.difficulty.pk:
-            return HttpResponseRedirect(reverse('tresure:last'))
+            return HttpResponseRedirect(reverse('treasure:last'))
         return super().get(request, **kwargs)
 
 
 class Last(TemplateView):
-    template_name = 'tresure/last.html'
+    template_name = 'treasure/last.html'
 
     def get(self, request, **kwargs):
         player = get_object_or_404(Player,
