@@ -15,7 +15,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: sudo pip3 install Django pycodestyle
+          command: sudo pip3 install Django pycodestyle --progress-bar off
 
       - run:
           name: Lint by pycodestyle
