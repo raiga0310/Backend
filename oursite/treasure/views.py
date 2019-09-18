@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
+from django.views import View
 from django.urls import reverse
 from .models import Player, Difficulty, Goal, Quiz, QuizData
 from random import shuffle
@@ -126,3 +127,6 @@ class Last(TemplateView):
                                    pk=request.session.get('player_pk', -1))
         kwargs['dif'] = player.difficulty
         return super().get(request, **kwargs)
+
+class ProgressError(View):
+    pass
