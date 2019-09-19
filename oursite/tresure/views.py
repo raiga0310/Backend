@@ -97,7 +97,9 @@ class DifSel(TemplateView):
         # プレイヤー作成
         player = Player.objects.create(difficulty=difficulty)
         for i in range(len(quizzes)):
-            player.quizzes.add(QuizData.objects.create(quiz=quizzes[i], order=i))
+            player.quizzes.add(
+                QuizData.objects.create(quiz=quizzes[i], order=i)
+            )
         request.session['player_pk'] = player.pk
         return HttpResponseRedirect(reverse('tresure:hints', args=(1,)))
 
