@@ -1,7 +1,7 @@
 from random import shuffle
 from django.test import TestCase
 from django.test import Client
-from .models import Difficulty, Player
+from .models import Difficulty, Player, QuizData
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .utility import ConversionTableResolver
@@ -21,8 +21,10 @@ class Goal_Test(TestCase):
             quizzes = list(difficulty.quizzes.all())
             shuffle(quizzes)  # 難易度から得たクイズをシャッフル。
             player = Player.objects.create(difficulty=difficulty)
-            for q in quizzes:
-                player.quizzes.add(q)
+        for i in range(len(quizzes)):
+            player.quizzes.add(
+                QuizData.objects.create(quiz=quizzes[i], order=i)
+            )
 
     def test_on_goal(self):
         for player in Player.objects.all():  # playerの数だけ繰り返す。
