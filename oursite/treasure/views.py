@@ -15,7 +15,7 @@ class GoGoal(TemplateView):
         player = get_player(request)
 
         if (player.progress != 5):
-            return redirect('tresure:progress-error')
+            return redirect('treasure:progress-error')
 
         diff_pk = player.difficulty.pk
         kwargs['diff_pk'] = diff_pk
@@ -36,7 +36,7 @@ class Hints(TemplateView):
         # セッションからplayerの情報を取得
         player = get_player(request)
         if (player.progress != kwargs['hint_index']):
-            return redirect('tresure:progress-error')
+            return redirect('treasure:progress-error')
         # 簡略化
         # hint = {1: player.quiz1.hint, 2: player.quiz2.hint,
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
@@ -93,7 +93,7 @@ class DifSel(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if (request.session.get('player_pk', -1) != -1):
-            return redirect('tresure:progress-error')
+            return redirect('treasure:progress-error')
         return super().get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -123,8 +123,8 @@ class OnGoal(TemplateView):
     def get(self, request, **kwargs):
         player = get_player(request)
 
-        if (player.progress != 6):
-            return redirect('tresure:progress-error')
+        if (player.progress != 5):
+            return redirect('treasure:progress-error')
 
         if kwargs['pk'] == player.difficulty.pk:
             player.progress = 6
@@ -147,16 +147,16 @@ class ProgressError(View):
         player = get_player(request)
         progress = player.progress
         if (progress <= 4):
-            return redirect('tresure:hints', hint_index=progress)
+            return redirect('treasure:hints', hint_index=progress)
         elif (progress == 5):
-            return redirect('tresure:go-goal')
+            return redirect('treasure:go-goal')
         elif (progress == 6):
-            return redirect('tresure:last')
+            return redirect('treasure:last')
         return Http404()
 
 
 class Reset(TemplateView):
-    template_name = 'tresure/reset.html'
+    template_name = 'treasure/reset.html'
 
     def post(self, request, *args, **kwargs):
         answer = request.POST.get('answer', 'n')
@@ -164,15 +164,15 @@ class Reset(TemplateView):
         if (answer == 'y'):
             player.delete()
             del request.session['player_pk']
-            return redirect('tresure:dif-sel')
+            return redirect('treasure:dif-sel')
         else:
             progress = player.progress
             if (progress <= 4):
-                return redirect('tresure:hints', hint_index=progress)
+                return redirect('treasure:hints', hint_index=progress)
             elif (progress == 5):
-                return redirect('tresure:go-goal')
+                return redirect('treasure:go-goal')
             elif (progress == 6):
-                return redirect('tresure:last')
+                return redirect('treasure:last')
             return Http404()
 
 

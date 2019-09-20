@@ -8,7 +8,7 @@ from .utility import ConversionTableResolver
 # Create your tests here.
 
 
-class Goal_Test(TestCase):
+class GoalTest(TestCase):
 
     # テストするプレイヤーに与える難易度のpkのリスト
     try_difficulty_pk_list = [1, 3, 2]
@@ -73,7 +73,7 @@ class UtilityTest(TestCase):
     def setUp(self):
         pass
 
-    def test_(self):
+    def test_conversion_table(self):
         table_data = ConversionTableResolver.createTable(2).data
         # 変換表(10進)が表示されているか
         self.assertIn({'binary': '00000000',
