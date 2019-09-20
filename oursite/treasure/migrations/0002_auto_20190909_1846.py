@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tresure', '0001_initial'),
+        ('treasure', '0001_initial'),
     ]
 
     operations = [
@@ -34,17 +34,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='difficulty',
             name='goal',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='tresure.Goal'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='treasure.Goal'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='difficulty',
             name='quizzes',
-            field=models.ManyToManyField(to='tresure.Quiz'),
+            field=models.ManyToManyField(to='treasure.Quiz'),
         ),
         migrations.AddField(
             model_name='player',
             name='quizzes',
-            field=models.ManyToManyField(to='tresure.Quiz'),
+            field=models.ManyToManyField(to='treasure.Quiz'),
         ),
     ]

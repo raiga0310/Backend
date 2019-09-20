@@ -32,14 +32,14 @@ class Goal_Test(TestCase):
             s['player_pk'] = player.pk  # プレイヤーのpk(1スタート)をセッションに登録する。
             s.save()
             for diff in Difficulty.objects.all():  # Difficultyの長さだけ繰り返す。
-                # 与えたセッションを使い,/tresure/(難易度のpk)/on-goal/をGETする。
-                response = self.client.get('/tresure/' + str(diff.pk) +
+                # 与えたセッションを使い,/treasure/(難易度のpk)/on-goal/をGETする。
+                response = self.client.get('/treasure/' + str(diff.pk) +
                                            '/on-goal/', follow=True)
                 # URLに与えた難易度のpkが,try_listのDifficulty(現在テスト中のプレイヤーに与えているDifficulty)のpkと等しい時
                 if(diff.pk == self.try_difficulty_pk_list[player.pk - 1]):
                     # 最後のページへ飛移するはず。(302)
                     self.assertEqual(response.redirect_chain,
-                                     [('/tresure/last/', 302)])
+                                     [('/treasure/last/', 302)])
                     # 難易度の文字列化したものが表示されるはず。
                     self.assertContains(response, diff.name)
                 else:
@@ -54,8 +54,8 @@ class Goal_Test(TestCase):
             # 難易度を得る。
             diff = Difficulty.objects.get(
                 pk=self.try_difficulty_pk_list[player.pk - 1])
-            # 与えたセッションを使い,/tresure/go-goal/をGETする。
-            response = self.client.get('/tresure/go-goal/')
+            # 与えたセッションを使い,/treasure/go-goal/をGETする。
+            response = self.client.get('/treasure/go-goal/')
             # try_listのDifficulty(現在テスト中のプレイヤーに与えているDifficulty)のpkが1の時、
             if(self.try_difficulty_pk_list[player.pk - 1] == 1):
                 # ゴールのnameが表示されるはず。
