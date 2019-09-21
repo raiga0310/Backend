@@ -31,6 +31,8 @@ class GoalTest(TestCase):
             s = self.client.session
             s['player_pk'] = player.pk  # プレイヤーのpk(1スタート)をセッションに登録する。
             s.save()
+            player.progress = 5
+            player.save()
             for diff in Difficulty.objects.all():  # Difficultyの長さだけ繰り返す。
                 # 与えたセッションを使い,/treasure/(難易度のpk)/on-goal/をGETする。
                 response = self.client.get('/treasure/' + str(diff.pk) +
@@ -54,6 +56,8 @@ class GoalTest(TestCase):
             # 難易度を得る。
             diff = Difficulty.objects.get(
                 pk=self.try_difficulty_pk_list[player.pk - 1])
+            player.progress = 5
+            player.save()
             # 与えたセッションを使い,/treasure/go-goal/をGETする。
             response = self.client.get('/treasure/go-goal/')
             # try_listのDifficulty(現在テスト中のプレイヤーに与えているDifficulty)のpkが1の時、
