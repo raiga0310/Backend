@@ -144,6 +144,8 @@ class Last(TemplateView):
 class ProgressError(View):
 
     def get(self, request, **kwargs):
+        if (request.session.get('player_pk', -1) == -1):
+            return redirect('treasure:dif-sel')
         player = get_player(request)
         progress = player.progress
         if (progress <= 4):
@@ -157,6 +159,12 @@ class ProgressError(View):
 
 class Reset(TemplateView):
     template_name = 'treasure/reset.html'
+
+    def get(self, request, *args, **kwargs):
+        if (request.session.get('player_pk', -1) == -1):
+            return redirect('treasure:progress-error')
+        else:
+            return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         answer = request.POST.get('answer', 'n')
