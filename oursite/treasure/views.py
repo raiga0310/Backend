@@ -42,7 +42,7 @@ class Hints(TemplateView):
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
         # 現在のページに対応したヒントを送信
         # kwargs['hint'] = hint[kwargs['hint_index']]
-        quiz_data = player.quizzes.get(order=kwargs['hint_index'] - 1)
+        quiz_data = player.quizzes.get(order=kwargs['hint_index'])
         kwargs['hint'] = quiz_data.quiz.hint
         return super().get(request, *args, **kwargs)
 
@@ -55,7 +55,7 @@ class Hints(TemplateView):
             # keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
-            quiz_data = player.quizzes.get(order=kwargs['hint_index'] - 1)
+            quiz_data = player.quizzes.get(order=kwargs['hint_index'])
             keyword = quiz_data.quiz.keyword
             if keyword == self.request.POST.get('number', None):
                 # 正解と送信
@@ -111,7 +111,7 @@ class DifSel(TemplateView):
         player = Player.objects.create(difficulty=difficulty, progress=1)
         for i in range(len(quizzes)):
             player.quizzes.add(
-                QuizData.objects.create(quiz=quizzes[i], order=i)
+                QuizData.objects.create(quiz=quizzes[i], order=i+1)
             )
         request.session['player_pk'] = player.pk
         return HttpResponseRedirect(reverse('treasure:hints', args=(1,)))
