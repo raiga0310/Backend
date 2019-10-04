@@ -70,7 +70,8 @@ class Hints(TemplateView):
                     player.progress = kwargs['hint_index'] + 1
                     player.save()
                     # 次のページへ
-                    return redirect('treasure:hints', hint_index=str(kwargs['hint_index'] + 1))
+                    return redirect('treasure:hints',
+                                    hint_index=str(kwargs['hint_index'] + 1))
             else:
                 # 不正解と送信
                 kwargs['result'] = '不正解'
@@ -167,9 +168,11 @@ class Reset(TemplateView):
         else:
             return move_page_by_progress(request)
 
+
 def get_player(request):
     return get_object_or_404(Player,
                              pk=request.session.get('player_pk', -1))
+
 
 def move_page_by_progress(request):
     player = get_player(request)
