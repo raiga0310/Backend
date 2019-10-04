@@ -128,6 +128,7 @@ class OnGoal(TemplateView):
 
         if kwargs['pk'] == player.difficulty.pk:
             player.progress = 6
+            player.save()
             return HttpResponseRedirect(reverse('treasure:last'))
         return super().get(request, **kwargs)
 
@@ -137,6 +138,10 @@ class Last(TemplateView):
 
     def get(self, request, **kwargs):
         player = get_player(request)
+
+        if (player.progress != 6 and player.progress != 7):
+            return redirect('treasure:progress-error')
+
         kwargs['dif'] = player.difficulty
         kwargs['progress'] = player.progress
         return super().get(request, **kwargs)
@@ -145,6 +150,7 @@ class Last(TemplateView):
         player = get_player(request)
         player.progress = 7
         player.save()
+        kwargs['dif'] = player.difficulty
         kwargs['progress'] = player.progress
         return super().get(request, **kwargs)
 
@@ -187,7 +193,7 @@ class Reset(TemplateView):
                 return redirect('treasure:hints', hint_index=progress)
             elif (progress == 5):
                 return redirect('treasure:go-goal')
-            elif (progress == 6):
+            elif (progress == 6 or progress == 7):
                 return redirect('treasure:last')
             return Http404()
 

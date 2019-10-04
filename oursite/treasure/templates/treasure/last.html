@@ -1,10 +1,10 @@
 <p>
     {{dif.name}}クリア <!--難易度-->
-    {% ifequal progress == 7 %}
+    {% ifequal progress 6 %}
         下のボタンは景品を受け取った後に押して下さい
         <form action="" method="POST">
             {% csrf_token %}
             <input type="submit" value="景品受け取り確認">
         </form>
-    {% endif %}
+    {% endifequal %}
 </p>
