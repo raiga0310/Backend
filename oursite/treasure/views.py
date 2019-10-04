@@ -17,14 +17,14 @@ class GoGoal(TemplateView):
         if (player.progress != 5):
             return redirect('treasure:progress-error')
 
-        diff_pk = player.difficulty.pk
-        kwargs['diff_pk'] = diff_pk
-        if(diff_pk == 1):
+        difficulty_pk = player.difficulty.pk
+        kwargs['difficulty_pk'] = difficulty_pk
+        if(difficulty_pk == 1):
             kwargs['goal'] = player.difficulty.goal.name
         else:
             kwargs['quizzes'] = player.quizzes.all()
-            kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
-            table = ConversionTableResolver.createTable(diff_pk)
+            kwargs['change'] = ('10' if (difficulty_pk == 2) else '16') + '進数'
+            table = ConversionTableResolver.createTable(difficulty_pk)
             kwargs['corresponds'] = table.data
         return super().get(request, *args, **kwargs)
 
