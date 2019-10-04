@@ -65,13 +65,12 @@ class Hints(TemplateView):
                     player.progress = 5
                     player.save()
                     # ゴール誘導ページへ
-                    return HttpResponseRedirect(reverse('treasure:go-goal'))
+                    return redirect('treasure:go-goal')
                 else:
                     player.progress = kwargs['hint_index'] + 1
                     player.save()
                     # 次のページへ
-                    return HttpResponseRedirect(reverse(
-                            'treasure:hints', args=(kwargs['hint_index']+1,)))
+                    return redirect('treasure:hints', hint_index=str(kwargs['hint_index'] + 1))
             else:
                 # 不正解と送信
                 kwargs['result'] = '不正解'
@@ -85,7 +84,7 @@ class Opening(TemplateView):
         if(request.session.get('player_pk', -1) != -1):
             return redirect('treasure:reset')
         else:
-            return HttpResponseRedirect(reverse('treasure:dif-sel'))
+            return redirect('treasure:dif-sel')
 
 
 class DifSel(TemplateView):
@@ -114,7 +113,7 @@ class DifSel(TemplateView):
                 QuizData.objects.create(quiz=quizzes[i], order=i+1)
             )
         request.session['player_pk'] = player.pk
-        return HttpResponseRedirect(reverse('treasure:hints', args=(1,)))
+        return redirect('treasure:hints', hint_index=1)
 
 
 class OnGoal(TemplateView):
