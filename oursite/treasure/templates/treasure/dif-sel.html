@@ -1,11 +1,11 @@
 <h1>難易度を選んでください</h1>
 <form action="" method="POST">
     {% csrf_token %}
-    {% for diff in difficulties %}
+    {% for difficulty in difficulties %}
         <div class="select">
-            <input type="radio" name="diff" id="{{diff.id}}" value="{{diff.id}}">
-            <label for="{{diff.id}}">
-                {{diff.name}}
+            <input type="radio" name="difficulty" id="{{difficulty.id}}" value="{{difficulty.id}}">
+            <label for="{{difficulty.id}}">
+                {{difficulty.name}}
             </label>
         </div>
     {% endfor %}

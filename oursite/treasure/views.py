@@ -102,8 +102,8 @@ class DifSel(TemplateView):
         return context
 
     def post(self, request, **kwargs):
-        dif_pk = request.POST.get('diff', -1)
-        difficulty = get_object_or_404(Difficulty, pk=dif_pk)
+        difficulty_pk = request.POST.get('difficulty', -1)
+        difficulty = get_object_or_404(Difficulty, pk=difficulty_pk)
 
         quizzes = list(difficulty.quizzes.all())
         shuffle(quizzes)
@@ -137,7 +137,7 @@ class Last(TemplateView):
 
     def get(self, request, **kwargs):
         player = get_player(request)
-        kwargs['dif'] = player.difficulty
+        kwargs['difficulty'] = player.difficulty
         return super().get(request, **kwargs)
 
 
