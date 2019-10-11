@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, reverse, redirect
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import Http404
 from django.views.generic import TemplateView
 from django.views import View
 from django.urls import reverse
@@ -17,14 +17,14 @@ class GoGoal(TemplateView):
         if (player.progress != 5):
             return redirect('treasure:progress-error')
 
-        diff_pk = player.difficulty.pk
-        kwargs['diff_pk'] = diff_pk
-        if(diff_pk == 1):
+        difficulty_pk = player.difficulty.pk
+        kwargs['difficulty_pk'] = difficulty_pk
+        if(difficulty_pk == 1):
             kwargs['goal'] = player.difficulty.goal.name
         else:
             kwargs['quizzes'] = player.quizzes.all()
-            kwargs['change'] = ('10' if (diff_pk == 2) else '16') + '進数'
-            table = ConversionTableResolver.createTable(diff_pk)
+            kwargs['change'] = ('10' if (difficulty_pk == 2) else '16') + '進数'
+            table = ConversionTableResolver.createTable(difficulty_pk)
             kwargs['corresponds'] = table.data
         return super().get(request, *args, **kwargs)
 
@@ -42,7 +42,7 @@ class Hints(TemplateView):
         #        3: player.quiz3.hint, 4: player.quiz4.hint}
         # 現在のページに対応したヒントを送信
         # kwargs['hint'] = hint[kwargs['hint_index']]
-        quiz_data = player.quizzes.get(order=kwargs['hint_index'] - 1)
+        quiz_data = player.quizzes.get(order=kwargs['hint_index'])
         kwargs['hint'] = quiz_data.quiz.hint
         return super().get(request, *args, **kwargs)
 
@@ -55,7 +55,7 @@ class Hints(TemplateView):
             # keyword = {1: player.quiz1.keyword, 2: player.quiz2.keyword,
             #           3: player.quiz3.keyword, 4: player.quiz4.keyword}
             # 受け取ったキーワードが現在のページの答えと等しいなら
-            quiz_data = player.quizzes.get(order=kwargs['hint_index'] - 1)
+            quiz_data = player.quizzes.get(order=kwargs['hint_index'])
             keyword = quiz_data.quiz.keyword
             if keyword == self.request.POST.get('number', None):
                 # 正解と送信
@@ -65,13 +65,13 @@ class Hints(TemplateView):
                     player.progress = 5
                     player.save()
                     # ゴール誘導ページへ
-                    return HttpResponseRedirect(reverse('treasure:go-goal'))
+                    return redirect('treasure:go-goal')
                 else:
                     player.progress = kwargs['hint_index'] + 1
                     player.save()
                     # 次のページへ
-                    return HttpResponseRedirect(reverse(
-                            'treasure:hints', args=(kwargs['hint_index']+1,)))
+                    return redirect('treasure:hints',
+                                    hint_index=str(kwargs['hint_index'] + 1))
             else:
                 # 不正解と送信
                 kwargs['result'] = '不正解'
@@ -85,7 +85,7 @@ class Opening(TemplateView):
         if(request.session.get('player_pk', -1) != -1):
             return redirect('treasure:reset')
         else:
-            return HttpResponseRedirect(reverse('treasure:dif-sel'))
+            return redirect('treasure:dif-sel')
 
 
 class DifSel(TemplateView):
@@ -102,8 +102,8 @@ class DifSel(TemplateView):
         return context
 
     def post(self, request, **kwargs):
-        dif_pk = request.POST.get('diff', -1)
-        difficulty = get_object_or_404(Difficulty, pk=dif_pk)
+        difficulty_pk = request.POST.get('difficulty', -1)
+        difficulty = get_object_or_404(Difficulty, pk=difficulty_pk)
 
         quizzes = list(difficulty.quizzes.all())
         shuffle(quizzes)
@@ -111,10 +111,10 @@ class DifSel(TemplateView):
         player = Player.objects.create(difficulty=difficulty, progress=1)
         for i in range(len(quizzes)):
             player.quizzes.add(
-                QuizData.objects.create(quiz=quizzes[i], order=i)
+                QuizData.objects.create(quiz=quizzes[i], order=i+1)
             )
         request.session['player_pk'] = player.pk
-        return HttpResponseRedirect(reverse('treasure:hints', args=(1,)))
+        return redirect('treasure:hints', hint_index=1)
 
 
 class OnGoal(TemplateView):
@@ -128,7 +128,7 @@ class OnGoal(TemplateView):
 
         if kwargs['pk'] == player.difficulty.pk:
             player.progress = 6
-            return HttpResponseRedirect(reverse('treasure:last'))
+            return redirect('treasure:last')
         return super().get(request, **kwargs)
 
 
@@ -137,7 +137,7 @@ class Last(TemplateView):
 
     def get(self, request, **kwargs):
         player = get_player(request)
-        kwargs['dif'] = player.difficulty
+        kwargs['difficulty'] = player.difficulty
         return super().get(request, **kwargs)
 
 
@@ -146,15 +146,7 @@ class ProgressError(View):
     def get(self, request, **kwargs):
         if (request.session.get('player_pk', -1) == -1):
             return redirect('treasure:dif-sel')
-        player = get_player(request)
-        progress = player.progress
-        if (progress <= 4):
-            return redirect('treasure:hints', hint_index=progress)
-        elif (progress == 5):
-            return redirect('treasure:go-goal')
-        elif (progress == 6):
-            return redirect('treasure:last')
-        return Http404()
+        return move_page_by_progress(request)
 
 
 class Reset(TemplateView):
@@ -174,16 +166,21 @@ class Reset(TemplateView):
             del request.session['player_pk']
             return redirect('treasure:dif-sel')
         else:
-            progress = player.progress
-            if (progress <= 4):
-                return redirect('treasure:hints', hint_index=progress)
-            elif (progress == 5):
-                return redirect('treasure:go-goal')
-            elif (progress == 6):
-                return redirect('treasure:last')
-            return Http404()
+            return move_page_by_progress(request)
 
 
 def get_player(request):
     return get_object_or_404(Player,
                              pk=request.session.get('player_pk', -1))
+
+
+def move_page_by_progress(request):
+    player = get_player(request)
+    progress = player.progress
+    if (progress <= 4):
+        return redirect('treasure:hints', hint_index=progress)
+    elif (progress == 5):
+        return redirect('treasure:go-goal')
+    elif (progress == 6):
+        return redirect('treasure:last')
+    return Http404()
