@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./style/last.css">
+  <title>last</title>
+  {% load static %}
+  <script src="{% static "back-prevent.js" %}"></script>
+    </head>
+
+    <body>
+    <h1>おめでとうございます。あなたはすべてのクイズを解決し、宝へと至ります。</h1>
+    <div id="difficulty">
+        あなたが攻略したのは、{{ difficulty.name }}です。<br>
+    323講義室(情報科棟2階)へ向かってください。
+    <h2>注意</h2>
+    <h3>この画面は宝を得る際に必ず必要になります。閉じないでください。</h3>
+    </div>
+    </body>
+
+    </html>
