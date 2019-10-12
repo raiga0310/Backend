@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Tresure-Hunt</title>
+    <link rel="stylesheet" href="./style/hints.css" />
+    {% load static %}
+    <script src="{% static "back-prevent.js" %}"></script>
+  </head>
+
+  <body>
+    <h1>ヒント</h1>
+    <div id="hint">{{ hint }}</div>
+    <form action="" method="post">
+      <input type="number" id="number">
+      <button id="confirm" type="submit">確認</button>
+    </form>
+  </body>
+  
+</html>
